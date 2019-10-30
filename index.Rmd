@@ -2,9 +2,23 @@
 title: "How to make a plot by ggplot2"
 ---
 
+![](Data.png)
 
 
-### Philosophy of Visualization
+## What is data science?
+
+From Modern Data Science with R: 
+
+“[Data Science is] the science of extracting meaningful information from data” 
+
+Several key ideas embedded in this statement: 
+
+- Data science is a science, a rigorous discipline that combines elements of statistics and computer science with roots in mathematics.
+
+- Data science is best applied in the context of expert knowledge about the domain from which the data originated.
+
+
+### A ring of Data Science -- Visualization
 
 “The greatest value of a picture is when it forces us to notice what we never expected to see.”
 – John Tukey (American statistician and creator of the boxplot and many other things)
@@ -33,4 +47,6 @@ perhaps make two plots
 ##### To understand what a good plot is, it is helpful to look at some bad plots. Let’s see some bad plots courtesy of Karl Broman:
 
 https://www.biostat.wisc.edu/~kbroman/topten_worstgraphs/
+
+In the blog part, I give some simple drawing methods in ggplot2.
 

@@ -301,3 +301,79 @@ geom_boxplot()
 ```
 
 This boxplot is not very well. Based on the knowledge above, how can we improve the plot?
+
+# A cool plot
+
+Use the make_babynames_dist() function in the mdsr package to recreate the “Deadest Names” graphic from FiveThirtyEight.
+
+Follow below steps:
+
+• Using what we have learned about the ggplot2.
+
+- (a) make a dataframe with only females 
+
+- (b) calculate the total number of each name from 1900 to the present 
+
+- (c) only take names having over 100,000 people having that name from 1900 to present (i.e. common names).
+
+- (d) calculate the percent of people with that name who are dead. 
+
+- (e) select the top 10 names.
+
+• Do the same for males.
+
+• Bind the two dataframes you created together.
+
+• Use geom_bar and coord_ﬂip to get started on the plot!
+
+```{r,warning=FALSE}
+library(babynames)
+library(mdsr)
+
+BabynamesDist <- make_babynames_dist()
+deadest_female <- BabynamesDist %>%
+filter(sex == 'F') %>% ##filter for only females
+group_by(name) %>% ## group by names
+mutate(N = sum(count_thousands * 1000 )) %>% ##calculate the total number with each name from 1900 to present
+filter(N >= 100000) %>% ##filter so we only have common names
+summarise(percent_dead_today = 1 - sum(est_alive_today) / sum(count_thousands * 1000 )) %>% ## calc percent dead
+ungroup() %>% ##ungroup
+arrange(desc(percent_dead_today)) %>% ##arrange by percent dead in descending order
+mutate(sex = 'F') %>% ## add sex back in
+head(10) ##select the top 10
+
+deadest_male <- BabynamesDist %>%
+filter(sex == 'M') %>% ##filter for only males
+group_by(name) %>% ## group by names
+mutate(N = sum(count_thousands * 1000 )) %>% ##calculate the total number with each name from 1900 to present
+filter(N >= 100000) %>% ##filter so we only have common names
+summarise(percent_dead_today = 1 - sum(est_alive_today) / sum(count_thousands * 1000 )) %>% ## calc percent dead
+ungroup() %>% ##ungroup
+arrange(desc(percent_dead_today)) %>% ##arrange by percent dead in descending order
+mutate(sex = 'M') %>% ## add sex back in
+head(10) ##select the top 10
+
+deadest <- rbind(deadest_female,
+deadest_male) ##bind the two dataframes togather
+deadest <- deadest %>%
+mutate(label = paste0(round(percent_dead_today * 100, 1), '%')) ##add a variable label which will be the percent dead
+```
+
+```{r}
+ggplot(deadest, aes(x = reorder(name, percent_dead_today), ##reorder name by the percent dead today
+y = percent_dead_today,
+fill = sex, ##color the plot by sex
+label = label)) + ##add label for the percent dead
+geom_bar(stat = 'identity',) + ## make the barplot
+coord_flip() + ## flip the coordinates
+scale_fill_manual(values=c('#e1ad01', '#1C86EE')) + ## change the colors
+geom_text( size = 3, position = position_stack(vjust = 1.05)) + ## add the label for the percent dead today
+theme(legend.position="none", ##remove the legend
+panel.grid.major = element_blank(), panel.grid.minor = element_blank(), ##remove the background grid
+axis.text.x=element_blank(), ## remove the x-axis text
+axis.ticks.x=element_blank()) + ## remove the x-axis tick marks
+labs(x= '', ##no label for x-axis
+y = '', ##no label for y-axis
+title = 'Deadest Names', ##add title
+subtitle = 'Estimated percentage of Americans with a given name born since \n1900 who were dead as of Jan. 1, 2014.')
+```

@@ -351,14 +351,26 @@ div.tocify {
   <a href="about.html">About</a>
 </li>
 <li>
-  <a href="mailto:&lt;you@youremail.com&gt;">
+  <a href="blog.html">blog</a>
+</li>
+<li>
+  <a href="Resume.pdf">Resume</a>
+</li>
+<li>
+  <a href="mailto:&lt;wenyuzhu233@gmial.com&gt;">
     <span class="fa fa-envelope fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="http://github.com/&lt;YOUR_GH_NAME&gt;/">
+  <a href="http://github.com/Wenyu-ZHU/">
     <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://twitter.com/WenyuZhu4">
+    <span class="fa fa-twitter fa-lg"></span>
      
   </a>
 </li>
@@ -634,6 +646,79 @@ geom_boxplot()</code></pre>
 <p><img src="blog_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
 <p>This boxplot is not very well. Based on the knowledge above, how can we improve the plot?</p>
 </div>
+</div>
+<div id="a-cool-plot" class="section level1">
+<h1><span class="header-section-number">4</span> A cool plot</h1>
+<p>Use the make_babynames_dist() function in the mdsr package to recreate the “Deadest Names” graphic from FiveThirtyEight.</p>
+<p>Follow below steps:</p>
+<p>• Using what we have learned about the ggplot2.</p>
+<ul>
+<li><ol style="list-style-type: lower-alpha">
+<li>make a dataframe with only females</li>
+</ol></li>
+<li><ol start="2" style="list-style-type: lower-alpha">
+<li>calculate the total number of each name from 1900 to the present</li>
+</ol></li>
+<li><ol start="3" style="list-style-type: lower-alpha">
+<li>only take names having over 100,000 people having that name from 1900 to present (i.e. common names).</li>
+</ol></li>
+<li><ol start="4" style="list-style-type: lower-alpha">
+<li>calculate the percent of people with that name who are dead.</li>
+</ol></li>
+<li><ol start="5" style="list-style-type: lower-alpha">
+<li>select the top 10 names.</li>
+</ol></li>
+</ul>
+<p>• Do the same for males.</p>
+<p>• Bind the two dataframes you created together.</p>
+<p>• Use geom_bar and coord_ﬂip to get started on the plot!</p>
+<pre class="r"><code>library(babynames)
+library(mdsr)
+
+BabynamesDist &lt;- make_babynames_dist()
+deadest_female &lt;- BabynamesDist %&gt;%
+filter(sex == &#39;F&#39;) %&gt;% ##filter for only females
+group_by(name) %&gt;% ## group by names
+mutate(N = sum(count_thousands * 1000 )) %&gt;% ##calculate the total number with each name from 1900 to present
+filter(N &gt;= 100000) %&gt;% ##filter so we only have common names
+summarise(percent_dead_today = 1 - sum(est_alive_today) / sum(count_thousands * 1000 )) %&gt;% ## calc percent dead
+ungroup() %&gt;% ##ungroup
+arrange(desc(percent_dead_today)) %&gt;% ##arrange by percent dead in descending order
+mutate(sex = &#39;F&#39;) %&gt;% ## add sex back in
+head(10) ##select the top 10
+
+deadest_male &lt;- BabynamesDist %&gt;%
+filter(sex == &#39;M&#39;) %&gt;% ##filter for only males
+group_by(name) %&gt;% ## group by names
+mutate(N = sum(count_thousands * 1000 )) %&gt;% ##calculate the total number with each name from 1900 to present
+filter(N &gt;= 100000) %&gt;% ##filter so we only have common names
+summarise(percent_dead_today = 1 - sum(est_alive_today) / sum(count_thousands * 1000 )) %&gt;% ## calc percent dead
+ungroup() %&gt;% ##ungroup
+arrange(desc(percent_dead_today)) %&gt;% ##arrange by percent dead in descending order
+mutate(sex = &#39;M&#39;) %&gt;% ## add sex back in
+head(10) ##select the top 10
+
+deadest &lt;- rbind(deadest_female,
+deadest_male) ##bind the two dataframes togather
+deadest &lt;- deadest %&gt;%
+mutate(label = paste0(round(percent_dead_today * 100, 1), &#39;%&#39;)) ##add a variable label which will be the percent dead</code></pre>
+<pre class="r"><code>ggplot(deadest, aes(x = reorder(name, percent_dead_today), ##reorder name by the percent dead today
+y = percent_dead_today,
+fill = sex, ##color the plot by sex
+label = label)) + ##add label for the percent dead
+geom_bar(stat = &#39;identity&#39;,) + ## make the barplot
+coord_flip() + ## flip the coordinates
+scale_fill_manual(values=c(&#39;#e1ad01&#39;, &#39;#1C86EE&#39;)) + ## change the colors
+geom_text( size = 3, position = position_stack(vjust = 1.05)) + ## add the label for the percent dead today
+theme(legend.position=&quot;none&quot;, ##remove the legend
+panel.grid.major = element_blank(), panel.grid.minor = element_blank(), ##remove the background grid
+axis.text.x=element_blank(), ## remove the x-axis text
+axis.ticks.x=element_blank()) + ## remove the x-axis tick marks
+labs(x= &#39;&#39;, ##no label for x-axis
+y = &#39;&#39;, ##no label for y-axis
+title = &#39;Deadest Names&#39;, ##add title
+subtitle = &#39;Estimated percentage of Americans with a given name born since \n1900 who were dead as of Jan. 1, 2014.&#39;)</code></pre>
+<p><img src="blog_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
 </div>
 
 

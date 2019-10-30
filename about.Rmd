@@ -5,12 +5,11 @@ title: "About"
 - __Ocupation:__ "Student"
 - __Hobbies:__ Reading novels and learning softwares development.
 
-### About this site
+### This page is used to describe some data science methods. 
 
-Sometimes you need to say a bit about the site -- how it was made, where it's hosted, where the source code can be found. 
+I will share some of the lessons I learned in class to give you a first look at ggplot2.
 
-If this is for a project or analysis, I recommend giving some details about the R package versions that you used to create the content.
-
-#### Here is a super cool book for us to learn R. 
+### Recommended books
+Here is a super cool book for you to learn R. 
 
 ![](200.jfif)
