@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Wenyu Zhu" />
+
+
+<title>How to make a plot by ggplot2</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/lumen.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 54px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h2 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h3 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h4 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h5 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h6 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="mailto:&lt;you@youremail.com&gt;">
+    <span class="fa fa-envelope fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="http://github.com/&lt;YOUR_GH_NAME&gt;/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">How to make a plot by ggplot2</h1>
+<h4 class="author">Wenyu Zhu</h4>
+<h4 class="date">29 Oct, 2019</h4>
+
+</div>
+
+
+<div id="get-started" class="section level1">
+<h1><span class="header-section-number">1</span> Get started</h1>
+<div id="installation" class="section level2">
+<h2><span class="header-section-number">1.1</span> Installation</h2>
+<p>We assume you have already installed R (<a href="https://www.r-project.org" class="uri">https://www.r-project.org</a>) (R Core Team 2019) and the RStudio IDE (<a href="https://www.rstudio.com" class="uri">https://www.rstudio.com</a>). Next we need to install the tidyverse package and mdsr package in R</p>
+<pre class="r"><code>install.packages(&#39;ggplot2&#39;)
+install.packages(&#39;mdsr&#39;)</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(mdsr)</code></pre>
+</div>
+<div id="a-quick-example" class="section level2">
+<h2><span class="header-section-number">1.2</span> A quick example</h2>
+<pre class="r"><code>curve(dnorm, from=-4, to=4, ylab=&quot;PDF&quot;, main=&quot;PDF of a standard normal&quot;, col=&quot;brown&quot;, lwd=4)</code></pre>
+<p><img src="blog_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>This is the simplest chart without importing data.</p>
+</div>
+</div>
+<div id="make-a-plot" class="section level1">
+<h1><span class="header-section-number">2</span> Make a plot</h1>
+<div id="ggplot2" class="section level2">
+<h2><span class="header-section-number">2.1</span> ggplot2</h2>
+<p>In ggplot2</p>
+<ul>
+<li><p>the ggplot() command creates a plot, with the argument data telling us which data to use</p></li>
+<li><p>the aes() command within ggplot() indicates the desired x and y variables</p></li>
+<li><p>plots are built with elements</p></li>
+<li><p>the element geom_point() indicates that we are using a scatterplot</p></li>
+</ul>
+<p>We will be using the data set CIACountries from the mdsr package. The CIACountries data table contains the following seven variables for 236 countries:</p>
+<ul>
+<li><p>population (pop)</p></li>
+<li><p>area (area)</p></li>
+<li><p>gross domestic product (gdp)</p></li>
+<li><p>percentage of GDP spent on education (educ)</p></li>
+<li><p>length of roadways per unit area (roadways)</p></li>
+<li><p>internet use as a fraction of the population (net_users)</p></li>
+<li><p>number of barrels of oil produced per day (oil_prod)</p></li>
+</ul>
+<pre class="r"><code>head(CIACountries)</code></pre>
+<pre><code>##          country      pop    area oil_prod   gdp educ   roadways net_users
+## 1    Afghanistan 32564342  652230        0  1900   NA 0.06462444       &gt;5%
+## 2        Albania  3029278   28748    20510 11900  3.3 0.62613051      &gt;35%
+## 3        Algeria 39542166 2381741  1420000 14500  4.3 0.04771929      &gt;15%
+## 4 American Samoa    54343     199        0 13000   NA 1.21105528      &lt;NA&gt;
+## 5        Andorra    85580     468       NA 37200   NA 0.68376068      &gt;60%
+## 6         Angola 19625353 1246700  1742000  7300  3.5 0.04125211      &gt;15%</code></pre>
+<p>Make a scatterplot of Gross Domestic Product and Education.</p>
+<pre class="r"><code>g &lt;- ggplot(data = CIACountries, aes(y=gdp, x = educ)) +
+  geom_point(na.rm=TRUE)+
+theme(axis.text=element_text(size=16),
+axis.title=element_text(size=20),
+plot.title=element_text(size = 24)) +
+ylab(&#39;Gross Domestic Product&#39;) +
+xlab(&#39;Percentage of Gross Domestic \n Product Spent on Education&#39;) +
+ggtitle(&#39;Gross Domestic Product and Education&#39;)
+g</code></pre>
+<p><img src="blog_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Scatterplot in which net_users is mapped to color.</p>
+<pre class="r"><code>g + geom_point(aes(color = net_users), size = 3,na.rm=TRUE) +
+guides(color=guide_legend(title=&quot;Internet Use&quot;))</code></pre>
+<p><img src="blog_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Scatterplot using both location and label as aesthetics.</p>
+<pre class="r"><code>g + geom_text(aes(label = country, color = net_users), size = 3) +
+guides(color=guide_legend(title=&quot;Internet Use&quot;))</code></pre>
+<p><img src="blog_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Scatterplot in which net_users is mapped to color and educ mapped to size.</p>
+<pre class="r"><code>g + geom_point(aes(color = net_users, size = roadways)) +
+guides(color=guide_legend(title=&quot;Internet Use&quot;),
+size=guide_legend(title=&#39;Roadway&#39;))</code></pre>
+<p><img src="blog_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+<div id="scale" class="section level2">
+<h2><span class="header-section-number">2.2</span> Scale</h2>
+<p>From the graphs that we made it is difficult to discern differences in GDP because there is a right-skew in GDP and we made a choice to use a linear scale on our plots.</p>
+<ul>
+<li><p>A logarithmic scale would make the plot much more readable.</p></li>
+<li><p>We will use the coord_trans() function to put our data on a logarithmic scale.</p></li>
+</ul>
+<p>Scatterplot using the logarithmic transform of GDP that helps to mitigate visual clustering caused by the right-skewed distribution of GDP among cities.</p>
+<pre class="r"><code>g + geom_point(aes(color = net_users, size = roadways)) +
+guides(color=guide_legend(title=&quot;Internet Use&quot;),
+size=guide_legend(title=&#39;Roadway&#39;)) +
+coord_trans(y = &quot;log10&quot;)</code></pre>
+<p><img src="blog_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>As an alternative to coord_trans() we can use the scale_y_continuous() function. The only difference is where the tick marks on the axis are drawn.</p>
+<p>The functions scale_x_continuous(), scale_x_discrete(), and scale_color() all perform analogous operations on different aesthetics.</p>
+<p>Scatterplot using the logarithmic transform of GDP that helps to mitigate visual clustering caused by the right-skewed distribution of GDP among cities.</p>
+<pre class="r"><code>g + geom_point(aes(color = net_users, size = roadways)) +
+guides(color=guide_legend(title=&quot;Internet Use&quot;),
+size=guide_legend(title=&#39;Roadway&#39;)) +
+scale_y_continuous(name = &#39;Gross Domestic Product&#39;, trans = &#39;log10&#39;)</code></pre>
+<p><img src="blog_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+</div>
+<div id="facets" class="section level2">
+<h2><span class="header-section-number">2.3</span> Facets</h2>
+<p>Using multiple aesthetics such as shape, color, and size to display multiple variables can produce a really hard to read graph!</p>
+<p>Facets are multiple side by side graphs used to display levels of categorical variables which can help.</p>
+<p>Scatterplot using facets for different ranges of Internet connectivity.</p>
+<pre class="r"><code>g + geom_point(alpha = 0.9, aes(size = roadways)) +
+coord_trans(y = &#39;log10&#39;) +
+facet_wrap(~net_users, nrow = 1) +
+theme(legend.position = &#39;top&#39;) +
+theme(axis.text.x =element_text(size=10))</code></pre>
+<p><img src="blog_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+</div>
+<div id="layers" class="section level2">
+<h2><span class="header-section-number">2.4</span> Layers</h2>
+<p>We can plot data from more than one data table together.</p>
+<p>We will now look at the MedicareProviders data set for an example. This data set tells how much different medical procedures cost in each state. The data set contains the following variables:</p>
+<ul>
+<li><p>medical procedure code (drg)</p></li>
+<li><p>state (stateProvider)</p></li>
+<li><p>number of charges with corresponding code (num_charges)</p></li>
+<li><p>mean charge for corresponding code (mean_charge)</p></li>
+</ul>
+<pre class="r"><code>head(MedicareCharges)</code></pre>
+<pre><code>## Warning: Detecting old grouped_df format, replacing `vars` attribute by
+## `groups`</code></pre>
+<pre><code>## # A tibble: 6 x 4
+## # Groups:   drg [1]
+##   drg   stateProvider num_charges mean_charge
+##   &lt;chr&gt; &lt;fct&gt;               &lt;int&gt;       &lt;dbl&gt;
+## 1 039   AK                      1      34805.
+## 2 039   AL                     23      32044.
+## 3 039   AR                     16      27463.
+## 4 039   AZ                     24      33443.
+## 5 039   CA                     67      56095.
+## 6 039   CO                     10      35252.</code></pre>
+<p>Let’s create a new data table with only the data from New Jersey. Bar graph of average charges for medical procedures in New Jersey</p>
+<pre class="r"><code>ChargesNJ &lt;- MedicareCharges %&gt;% filter(stateProvider == &#39;NJ&#39;)
+p &lt;- ggplot(data = ChargesNJ,
+aes(x = reorder(drg, mean_charge),
+y = mean_charge)) +
+geom_bar(fill = &#39;gray&#39;, stat = &#39;identity&#39;) +
+ggtitle(&#39;Average Medical Costs by Procedure in New Jersey&#39;) +
+ylab(&#39;Statewide Average Charges ($)&#39;) +
+xlab(&#39;Medical Procedure (DRG)&#39;) +
+theme(axis.text.y =element_text(size=16),
+axis.title=element_text(size=20),
+plot.title = element_text(size = 24),
+axis.text.x = element_text(angle = 90, hjust = 1))
+p</code></pre>
+<p><img src="blog_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>Bar graph adding a second layer to provide comparison of New Jersey to other states. Each dot represents one state while the bars represent Ne Jersey.</p>
+<pre class="r"><code>p + geom_point(data = MedicareCharges, size = 1, alpha = 0.3)</code></pre>
+<p><img src="blog_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+</div>
+</div>
+<div id="several-kinds-of-plot" class="section level1">
+<h1><span class="header-section-number">3</span> Several kinds of plot</h1>
+<div id="histogram" class="section level2">
+<h2><span class="header-section-number">3.1</span> Histogram</h2>
+<p>We will use the math SAT scores (math) from each state in the SAT_2010 data set.</p>
+<p>Histogram showing the distribution of Math SAT scores by state.</p>
+<pre class="r"><code>head(SAT_2010)</code></pre>
+<pre><code>##        state expenditure pupil_teacher_ratio salary read math write total
+## 1    Alabama          10                15.3  49948  556  550   544  1650
+## 2     Alaska          17                16.2  62654  518  515   491  1524
+## 3    Arizona           9                21.4  49298  519  525   500  1544
+## 4   Arkansas          10                14.1  49033  566  566   552  1684
+## 5 California          10                24.1  71611  501  516   500  1517
+## 6   Colorado          10                17.4  51660  568  572   555  1695
+##   sat_pct
+## 1       8
+## 2      52
+## 3      28
+## 4       5
+## 5      53
+## 6      19</code></pre>
+<pre class="r"><code>g &lt;- ggplot(data = SAT_2010, aes(x = math)) +
+theme(axis.text=element_text(size=16),
+axis.title=element_text(size=20),
+plot.title=element_text(size = 22)) +
+xlab(&#39;Math SAT Score&#39;) +
+ggtitle(&#39;State Average Math Scores on the 2010 SAT&#39;)
+g + geom_histogram(binwidth = 10)</code></pre>
+<p><img src="blog_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+</div>
+<div id="density" class="section level2">
+<h2><span class="header-section-number">3.2</span> Density</h2>
+<p>Density plot showing the distribution of the Math SAT scores by state.</p>
+<pre class="r"><code>g + geom_density(adjust = 0.3)</code></pre>
+<p><img src="blog_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+</div>
+<div id="bar-graphs" class="section level2">
+<h2><span class="header-section-number">3.3</span> Bar graphs</h2>
+<p>A bar plot showing the distribution of MATH SAT scores for a selection of states.</p>
+<pre class="r"><code>ggplot(data = head(SAT_2010, 10), aes(x = reorder(state, math), y = math)) +
+geom_bar(stat = &#39;identity&#39;) +
+theme(axis.text=element_text(size=16),
+axis.title=element_text(size=20),
+plot.title=element_text(size = 22)) +
+xlab(&#39;Math SAT Score&#39;) +
+ggtitle(&#39;State Average Math Scores on the 2010 SAT for Top 10 States&#39;)</code></pre>
+<p><img src="blog_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+</div>
+<div id="scatterplot" class="section level2">
+<h2><span class="header-section-number">3.4</span> Scatterplot</h2>
+<p>Recall our SAT_2010 example:</p>
+<pre class="r"><code>head(SAT_2010)</code></pre>
+<pre><code>##        state expenditure pupil_teacher_ratio salary read math write total
+## 1    Alabama          10                15.3  49948  556  550   544  1650
+## 2     Alaska          17                16.2  62654  518  515   491  1524
+## 3    Arizona           9                21.4  49298  519  525   500  1544
+## 4   Arkansas          10                14.1  49033  566  566   552  1684
+## 5 California          10                24.1  71611  501  516   500  1517
+## 6   Colorado          10                17.4  51660  568  572   555  1695
+##   sat_pct
+## 1       8
+## 2      52
+## 3      28
+## 4       5
+## 5      53
+## 6      19</code></pre>
+<p>A scatterplot of the SAT math scores and expenditure by pupil by states.</p>
+<pre class="r"><code>g &lt;- ggplot(data = SAT_2010, aes (x = expenditure, y = math)) +
+geom_point()
+g</code></pre>
+<p><img src="blog_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<p>A scatterplot of the SAT math scores and expenditure by pupil by states with a smooth trend line.</p>
+<pre class="r"><code>g &lt;- g + geom_smooth(method = &#39;lm&#39;, se = 0) +
+xlab(&quot;Average expenditure per student ($1000)&quot;) +
+ylab(&quot;Average score on math SAT&quot;) +
+ggtitle(&#39;Average Expediture versus Average SAT Score by State&#39;) +
+theme(axis.text=element_text(size=14),
+axis.title=element_text(size=20),
+plot.title=element_text(size = 22))
+g</code></pre>
+<p><img src="blog_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p>We will now place states into bins (e.g., high, medium, low) by the percentage of students taking the SAT.</p>
+<p>Scatterplot using the color aesthetic to separate the relationship between numeric variables by a third categorical variable.</p>
+<pre class="r"><code>SAT_2010 &lt;- SAT_2010 %&gt;%
+mutate(SAT_rate = cut(sat_pct, breaks = c(0, 30, 60, 100),
+labels = c(&#39;low&#39;, &#39;medium&#39;, &#39;high&#39;)))
+g &lt;- g %+% SAT_2010
+g + aes(color = SAT_rate)</code></pre>
+<p><img src="blog_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<p>Scatterplot using facet_wrap() to separate the relationship between two numeric variables by a third categorical variable.</p>
+<pre class="r"><code>g + facet_wrap(~SAT_rate)</code></pre>
+<p><img src="blog_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+</div>
+<div id="boxplot" class="section level2">
+<h2><span class="header-section-number">3.5</span> Boxplot</h2>
+<p>Boxplots can be useful for displaying a numerical response variable against a categorical explanatory variable. It is a graphic description of the five-number summary (minimum, Q1, median, Q3, and maximum).</p>
+<p>We will look at the length of children’s feet (in cm) by sex.</p>
+<pre class="r"><code>library(mosaic)
+favstats(length ~ sex, data = KidsFeet)</code></pre>
+<pre><code>##   sex  min    Q1 median   Q3  max     mean       sd  n missing
+## 1   B 22.9 24.35  24.95 25.8 27.5 25.10500 1.216758 20       0
+## 2   G 21.6 23.65  24.20 25.1 26.7 24.32105 1.330238 19       0</code></pre>
+<p>A box-and-whisker plot (boxplot) showing the distribution of foot length by gender for 39 children.</p>
+<pre class="r"><code>ggplot(data = KidsFeet, aes(x = sex, y = length)) +
+geom_boxplot()</code></pre>
+<p><img src="blog_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<p>This boxplot is not very well. Based on the knowledge above, how can we improve the plot?</p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

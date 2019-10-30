@@ -1,7 +1,36 @@
 ---
-title: "Holy cow!"
+title: "How to make a plot by ggplot2"
 ---
 
-### I have a webpage!
 
-And I can put all kinds of stuff on it!
+
+### Philosophy of Visualization
+
+“The greatest value of a picture is when it forces us to notice what we never expected to see.”
+– John Tukey (American statistician and creator of the boxplot and many other things)
+
+“Visualization is often used for evil - twisting insignificant data changes and making them look meaningful. Don’t do that crap if you want to be my friend. Present results clearly and honestly. If something isn’t working - those reviewing results need to know.” 
+– John Tukey
+
+#### A good plot should have:
+- Label the axis
+
+- Have a title
+
+- Make sure the title and axis are large enough
+
+- Label the plot or have a legend
+
+- Text on plots is great!
+
+- Use color and fill effectively to differentiate groups
+
+- Don’t make a plot overly complex – if it is getting too complex
+perhaps make two plots
+
+- Get rid of non-essentials
+
+##### To understand what a good plot is, it is helpful to look at some bad plots. Let’s see some bad plots courtesy of Karl Broman:
+
+https://www.biostat.wisc.edu/~kbroman/topten_worstgraphs/
+
